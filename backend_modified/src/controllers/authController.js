@@ -72,4 +72,10 @@ exports.update = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Erro interno" });
   }
+
+  exports.me = async (req, res) => {
+  const user = await Usuario.findByPk(req.user.id);
+  res.json(user);
+};
+
 };
