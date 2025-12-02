@@ -39,3 +39,37 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Erro interno' });
   }
 };
+
+// ... register e login aqui em cima ...
+
+exports.update = async (req, res) => {
+  try {
+    const { nome, email, senha } = req.body;
+
+    const user = await Usuario.findByPk(req.user.id);
+    if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
+
+    if (nome) user.nome = nome;
+    if (email) user.email = email;
+
+    if (senha) {
+      const hash = await bcrypt.hash(senha, 10);
+      user.senha = hash;
+    }
+
+    await user.save();
+
+    return res.json({
+      message: "Dados atualizados com sucesso",
+      user: {
+        id: user.id,
+        nome: user.nome,
+        email: user.email
+      }
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Erro interno" });
+  }
+};
